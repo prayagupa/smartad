@@ -4,7 +4,7 @@ check play version
 
 ```
 $ cat project/plugins.sbt | grep play
-
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.2.1")
 ```
 
 run
@@ -19,7 +19,9 @@ Nerd Tools
 -----------
 
 [play.vim](https://github.com/rdolgushin/play.vim)
+
  |
+
  |____ [snipmate.vim](https://github.com/msanders/snipmate.vim)
 
 
