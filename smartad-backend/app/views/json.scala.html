@@ -1,0 +1,10 @@
+@(json: play.api.libs.json.JsValue)
+
+<div class="well">
+    @helper.form(routes.Application.getJson) {
+    <p>
+        <input type="url" name="url" placeholder="Url" id="url" />
+    </p>
+    @json
+}
+</div>
