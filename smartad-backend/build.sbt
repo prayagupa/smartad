@@ -1,6 +1,6 @@
 import play.Project._
 
-name := "SmartAdHttpModule"
+name := "smartad-backend"
 
 version := "1.0"
 

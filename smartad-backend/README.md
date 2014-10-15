@@ -1,4 +1,10 @@
 
+check installed play version
+---------------------------------
+```
+/usr/local/play-2.2.2/play help
+```
+
 check play version
 ------------------
 
@@ -11,7 +17,7 @@ run
 -------
 
 ```
-$ play run
+$ /usr/local/play-2.2.2/play run
 ```
 
 
