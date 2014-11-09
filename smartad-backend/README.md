@@ -17,7 +17,7 @@ run
 -------
 
 ```
-$ /usr/local/play-2.2.2/play run
+$ /usr/local/play-2.2.2/play "~run 8443"
 ```
 
 using notification engine

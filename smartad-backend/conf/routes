@@ -3,10 +3,11 @@
 # ~~~~
 
 # Home page
-GET     /                           controllers.Application.index
-GET     /getJson                    controllers.Application.getJson
-GET     /notification               controllers.RestController.notification
+GET        /                     controllers.Application.index
+GET        /getJson              controllers.Application.getJson
+GET        /user                 controllers.NotificationController.index
+GET        /notification/n       controllers.RestController.notification
+GET        /notification/        controllers.NotificationController.notification
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.at(path="/public", file)
+GET        /assets/*file         controllers.Assets.at(path="/public", file)
 
-    
