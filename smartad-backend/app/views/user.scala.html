@@ -1,0 +1,19 @@
+@usermain {
+
+  <h1>SSE clock</h1>
+
+  <h1 id="clock">here goes time </h1>
+
+
+  <script type="text/javascript" charset="utf-8">
+        if (!!window.EventSource) {
+            var source = new EventSource("/notification");
+
+            source.addEventListener('message', function(e) {
+                $('#clock').html(e.data.replace(/(\d)/g, '<span>$1</span>'))
+            });
+        } else {
+            $("#clock").html("Sorry");
+        }
+  </script>
+}
