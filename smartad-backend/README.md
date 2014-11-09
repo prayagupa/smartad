@@ -20,6 +20,14 @@ run
 $ /usr/local/play-2.2.2/play run
 ```
 
+using notification engine
+---------------------------
+
+```
+var ws = new WebSocket("ws://localhost:9000/notification");
+ws.onmessage = function( message ) { console.log( message ); };
+ws.send("Prayag Upd is in Mountain View.");
+```
 
 Nerd Tools
 -----------
