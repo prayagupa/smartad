@@ -37,6 +37,13 @@ clientdata.txt                               |    SparkContext     | filter
 --------------------------------------------------------------------------------
 ```
 
+Time taken
+--------------
+
+```
+[success] Total time: 12 s, completed Dec 18, 2014 2:34:57 PM
+```
+
 References
 -------------
 
