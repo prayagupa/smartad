@@ -18,7 +18,7 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 object NotificationController extends Controller {
 
   /**
-   * notification engine using ES
+   * notification engine using EventSource
    */
 
   /**

@@ -10,13 +10,14 @@ check play version
 
 ```
 $ cat project/plugins.sbt | grep play
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.2.1")
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.2.2")
 ```
 
 run
 -------
 
 ```
+$ /usr/local/play-2.2.2/play compile
 $ /usr/local/play-2.2.2/play "~run 8443"
 ```
 
