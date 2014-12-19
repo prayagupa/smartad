@@ -1,13 +1,15 @@
-smartad
+smartad-front
 ===========
 
-**AngularJS - Scala - Play - Guice - PlayReactiveMongo**
+**AngularJS - Scala/Play - Guice - PlayReactiveMongo**
 
 Getting Started
 ----------
 
 ```
-play run
+/usr/local/mongodb-linux-x86_64-2.6.0/bin/mongod
+
+/usr/local/play-2.2.2/play "~run 8443"
 ```
 
 Note: This will create a MongoDB Collection for you automatically, a free-be from the Driver! 

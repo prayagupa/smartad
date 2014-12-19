@@ -80,4 +80,7 @@ class Users extends Controller with MongoController {
     }
   }
 
+  def dashboard = Action {
+    Ok(views.html.user())
+  }
 }

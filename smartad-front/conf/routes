@@ -10,6 +10,7 @@ GET     /hulaki                     @controllers.Application.index
 GET     /randomUUID                 @controllers.Application.randomUUID
 
 # User management API
+GET     /dashboard                  @controllers.Users.dashboard
 GET     /users                      @controllers.Users.findUsers
 POST    /user                       @controllers.Users.createUser
 
