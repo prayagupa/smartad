@@ -1,6 +1,7 @@
 package controllers
 
 import java.sql._
+import models._
 
 import java.net.URLEncoder
 import play.api.Play.current
@@ -15,16 +16,6 @@ import play.api.libs.json.JsValue
 import play.api.db._
 import anorm._
 
-// Entity
-class Product {
-  var id: Long = _
-  var brand: Long = _
-  var name: String = _
-  var date: Date = _
-  override def toString = {
-    "id: " + id + "* name: " + name + " isbn: " + brand + " date: " + date
-  }
-}
 
 object ProductController extends Controller {
 
@@ -32,7 +23,6 @@ object ProductController extends Controller {
 
   def index =  Action {
       products();
-      Thread.sleep(5000)
       Ok(views.html.product.index("products")) //TODO return list
   }
 
