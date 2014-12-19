@@ -17,11 +17,12 @@ install sbt, scala
 
 `scala 2.10.4`
 
-package and run app
+package and submit app
 ------------------------
 
 ```bash
-sbt package && sbt run
+sbt package
+$ /usr/local/spark-1.1.1/bin/spark-submit  --class "WordCountApp" --master local[4] target/scala-2.10/smartad-spark-wordcount_2.10-1.0.jar 
 ```
 
 architecture
