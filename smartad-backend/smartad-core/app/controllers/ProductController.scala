@@ -22,11 +22,11 @@ object ProductController extends Controller {
   var connection = DB.getConnection()
 
   def index =  Action {
-      products();
-      Ok(views.html.product.index("products")) //TODO return list
+      val products_ = products();
+      Ok(views.html.product.index(products_)) //TODO return list
   }
 
-  def products () : Unit= {
+  def products () : scala.collection.mutable.ArrayBuffer[Product] = {
   var listProduct = scala.collection.mutable.ArrayBuffer[Product]()
   
   try {
@@ -54,5 +54,6 @@ object ProductController extends Controller {
     }
     connection.close
   }
+  listProduct
   }
 }

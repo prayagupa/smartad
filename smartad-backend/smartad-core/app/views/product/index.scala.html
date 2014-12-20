@@ -1,18 +1,16 @@
-@(message: String)
+@(list: scala.collection.mutable.ArrayBuffer[models.Product])
 
 <div class="well">
-    @helper.form(routes.Application.getJson) {
 
     <p>
-        @message :
+        Products
     </p>
 
     <p>
        <table>
-	       <tr>
-		       <td>apple</td>
-	       </tr>
+	        <tr>
+		       <td>@list</td>
+	        </tr>
        </table>
     </p>
-}
 </div>
