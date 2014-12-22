@@ -1,7 +1,7 @@
 smartad-spark wordcount
 ==========================
 
-install spark
+build/install spark
 -----------------
 
 I put spark to `/usr/local/spark-1.1.1` and at `/usr/local/spark-1.1.1`
@@ -17,8 +17,8 @@ install sbt, scala
 
 `scala 2.10.4`
 
-start spark master and workers
---------------------
+[start spark master and workers in standalone mode](http://spark.apache.org/docs/1.0.1/spark-standalone.html)
+----------------------------------------------------
 
 ```
 $ /usr/local/spark-1.1.1/sbin/start-master.sh 

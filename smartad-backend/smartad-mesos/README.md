@@ -4,6 +4,11 @@ This repository contains code to run shell commands in a distributed manner usin
 
 #start mesos
 
+```
+/usr/local/mesos-0.20.1/build/bin/mesos-master.sh --ip=127.0.0.1 --work_dir=/var/lib/mesos
+/usr/local/mesos-0.20.1/build/bin/mesos-slave.sh  --master=127.0.0.1:5050
+```
+
 #build app
 
     mvn clean install
