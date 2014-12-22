@@ -21,6 +21,13 @@ $ /usr/local/play-2.2.2/play compile
 $ /usr/local/play-2.2.2/play "~run 8443"
 ```
 
+api
+--------
+
+```
+curl http://localhost:9000/products
+```
+
 using notification engine
 ---------------------------
 
