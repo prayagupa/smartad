@@ -1,12 +1,14 @@
 
+download `play 2.2.0` from here `https://playframework.com/download`
+
 check installed play version
 ---------------------------------
 ```
 /usr/local/play-2.2.2/play help
 ```
 
-check play version
-------------------
+check play version in app
+----------------------------
 
 ```
 $ cat project/plugins.sbt | grep play
@@ -21,11 +23,26 @@ $ /usr/local/play-2.2.2/play compile
 $ /usr/local/play-2.2.2/play "~run 8443"
 ```
 
-api
+rest api
 --------
 
 ```
-curl http://localhost:9000/products
+curl -XGET "http://localhost:9000/product/list"
+
+[  
+   {  
+      "id":1,
+      "brand":2147483647,
+      "name":"Jacket",
+      "created":1415124900000
+   },
+   {  
+      "id":2,
+      "brand":35345345,
+      "name":"Pants",
+      "created":1415038500000
+   }
+]
 ```
 
 using notification engine
