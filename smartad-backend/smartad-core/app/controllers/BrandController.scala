@@ -28,7 +28,8 @@ import com.codahale.jerkson.Json
 
 object BrandController extends Controller {
 
-  val Brands = TableQuery[BrandsTable]
+  val brandsQuery = TableQuery[BrandTable]
+  val productsQuery = TableQuery[ProductTable] 
 
   def index =  Action {
       Ok(views.html.product.index("results"))
@@ -39,9 +40,8 @@ object BrandController extends Controller {
   }
 
   def list = DBAction { implicit rs =>
-      val list = Brands.list
+      val list = brandsQuery.list
       val json = Json.generate(list)
       Ok(json).as("application/json")
   }
-
 }

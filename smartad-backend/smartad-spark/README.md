@@ -10,6 +10,20 @@ I put spark to `/usr/local/spark-1.1.1` and at `/usr/local/spark-1.1.1`
 sbt/sbt assembly
 ```
 
+start spark-jobserver
+-----------------------
+
+```
+cd spark-jobserver
+sbt publish-local
+sbt 
+> reStart config/local.conf
+> reStop
+```
+
+check log at `tail -f job-server/job-server-local.log`, server must be running at port `8090`. (verify with `netstat -vatn | grep 8090`)
+
+
 install sbt, scala
 --------------------
 
@@ -25,7 +39,10 @@ $ /usr/local/spark-1.1.1/sbin/start-master.sh
 starting org.apache.spark.deploy.master.Master, logging to /usr/local/spark-1.1.1/sbin/../logs/spark-prayagupd-org.apache.spark.deploy.master.Master-1-prayagupd.out
 
 ```
-goto `http://localhost:8080/`, somrthing as below will be seen, 
+
+Check log at `tail -f /usr/local/spark-1.1.1/sbin/../logs/spark-prayagupd-org.apache.spark.deploy.master.Master-1-prayagupd.out`
+
+goto `http://localhost:8080/`, something as below will be seen, 
 
 ```
 URL: spark://prayagupd:7077
@@ -81,6 +98,24 @@ Caused by: akka.remote.transport.netty.NettyTransport$$anonfun$associate$1$$anon
 ```
 
 Also spark-worker UI will give information this app.
+
+for spark-jobserver WordCountJob
+-------------------------------------
+
+```
+$ sbt job-server-tests/package
+
+$ curl --data-binary @job-server-tests/target/job-server-tests-0.4.2-SNAPSHOT.jar localhost:8090/jars/smartad-test
+
+$ curl -d "input.string = a b c a b see" 'localhost:8090/jobs?appName=smartad-test&classPath=spark.jobserver.WordCountExample'
+
+```
+
+check jobs 
+
+```
+curl -XGET "localhost:8090/jobs"
+```
 
 architecture
 -------------------

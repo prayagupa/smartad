@@ -14,6 +14,7 @@ case class Product (
   id: Option[Long],
   name: String,
   brand: Long ,
+  marketplace : Long ,
 //  var images : String,
   var price : Double,
   created: Option[Date] = None
@@ -31,8 +32,9 @@ class ProductTable(tag: Tag) extends Table[Product](tag, "Product") {
   def id    = column[Long]     ("id",    O.PrimaryKey, O.AutoInc)
   def name  = column[String]   ("name",  O.NotNull)
   def brand = column[Long]     ("brand", O.NotNull)
+  def marketplace = column[Long]     ("marketplace", O.NotNull)
   def price = column[Double]   ("price", O.NotNull)
   def created  = column[Date]  ("created",  O.Nullable)
   def * = 
-        (id.?, name, brand, price, created.?) <> (Product.tupled, Product.unapply _)
+        (id.?, name, brand, marketplace, price, created.?) <> (Product.tupled, Product.unapply _)
 }

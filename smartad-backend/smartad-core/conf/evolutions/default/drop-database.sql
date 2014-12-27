@@ -4,3 +4,5 @@
 drop table `Product`
 
 drop table `Brand`
+
+drop table `Marketplace`

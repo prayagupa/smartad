@@ -7,13 +7,13 @@ import play.api.db.slick.Config.driver.simple._
  * @on : 17 dec, 2014
  */
 
-case class Brand(id: Option[Long], name: String, color: String)
+case class Brand(id: Option[Long], name: String, category: String)
 
-class BrandsTable(tag: Tag) extends Table[Brand](tag, "Brand") {
+class BrandTable(tag: Tag) extends Table[Brand](tag, "Brand") {
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
   def name = column[String]("name", O.NotNull)
-  def color = column[String]("color", O.NotNull)
+  def category = column[String]("category", O.NotNull)
 
   def * = 
-	  (id.?,name, color) <> (Brand.tupled, Brand.unapply _)
+	  (id.?,name, category) <> (Brand.tupled, Brand.unapply _)
 }

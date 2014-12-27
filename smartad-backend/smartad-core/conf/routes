@@ -8,6 +8,7 @@ GET        /getJson              controllers.Application.getJson
 GET        /user                 controllers.NotificationController.index
 GET        /notification/n       controllers.RestController.notification
 GET        /notification         controllers.NotificationController.notification
+POST       /product/add          controllers.ProductController.add
 GET        /product/list         controllers.ProductController.products
 GET        /marketplace/list     controllers.MarketplaceController.list
 GET        /brand/list           controllers.BrandController.list
