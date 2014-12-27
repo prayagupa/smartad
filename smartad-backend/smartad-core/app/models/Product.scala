@@ -1,43 +1,38 @@
-package models
+package models.orm
 
-import java.sql._
-import play.api.libs.json._
+import java.sql.{Date => SqlDate}
+import java.util.Date
+import play.api.db.slick.Config.driver.simple._
+import java.sql.Timestamp
 
-/*
+/* Product
  * @author : prayagupd
  * @on : 17 dec, 2014
  */
 
 case class Product (
-  var id: Long ,
-  var brand: Long ,
-  var name: String,
-  var date: Date ,
-  var images : String,
+  id: Option[Long],
+  name: String,
+  brand: Long ,
+//  var images : String,
   var price : Double,
-  var description  : String,
-  var marketplace : String,
-  var rating : Double,
-  var reviews : String,
-  var releaseDate : Date
+  created: Option[Date] = None
+//  var description  : String,
+//  var marketplace : String,
+//  var rating : Double,
+//  var reviews : String,
+//  var releaseDate : Date
 
-) {
-def this(id: Int, brand : Long, name : String, date : Date) = this(id, 
-	                                                             brand, 
-								     name,
-								     date,
-								     "",
-								     0.0,
-								     "na",
-								     "na",
-								     0.0,
-								     "na",
-								     new Date(new java.util.Date().getTime()))  
-//  override def toString = {
-//    " id   : " + id + 
-//    " name : " + name + 
-//    " brand: " + brand + 
-//    " date : " + date
-//  }
+)
 
+class ProductTable(tag: Tag) extends Table[Product](tag, "Product") {
+  implicit val dateColumnType = MappedColumnType.base[Date, Long](d => d.getTime, d => new Date(d))
+
+  def id    = column[Long]     ("id",    O.PrimaryKey, O.AutoInc)
+  def name  = column[String]   ("name",  O.NotNull)
+  def brand = column[Long]     ("brand", O.NotNull)
+  def price = column[Double]   ("price", O.NotNull)
+  def created  = column[Date]  ("created",  O.Nullable)
+  def * = 
+        (id.?, name, brand, price, created.?) <> (Product.tupled, Product.unapply _)
 }

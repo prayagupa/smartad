@@ -1,7 +1,10 @@
 package controllers
 
 import java.sql._
-import models._
+import models.orm._
+import play.api.db.slick._
+import play.api.db.slick.Config.driver.simple._
+
 
 import java.net.URLEncoder
 import play.api.Play.current
@@ -17,15 +20,16 @@ import play.api.libs.json._
 import play.api.db._
 import anorm._
 
+import com.codahale.jerkson.Json
+
 /*
  * @author : prayagupd
  * @on : 17 dec, 2014
  */
 
-
 object ProductController extends Controller {
 
-  var connection = DB.getConnection()
+  val productsQuery = TableQuery[ProductTable]
 
   def index =  Action {
       Ok(views.html.product.index("results"))
@@ -35,48 +39,9 @@ object ProductController extends Controller {
       //TODO
   }
 
-  def products = Action {
-      implicit val productWrites = new Writes[Product] {
-        def writes(user: Product) = JsObject(Seq(
-          "id" -> JsNumber(user.id),
-          "brand" -> JsNumber(user.brand),
-          "name" -> JsString(user.name),
-          "created" -> Json.toJson(user.date)
-        ))
-      }
-
-      val im = scala.collection.immutable.Map("products" -> "jackets")
-
-      val productsBuffer = getProducts()
-      val list = productsBuffer.toList
-      val productsJson = Json.toJson (list).toString
+  def products = DBAction { implicit rs =>
+      val list = productsQuery.list
+      val productsJson = Json.generate(list)
       Ok(productsJson)
-  }
-
-  def getProducts () : scala.collection.mutable.ListBuffer[Product] = {
-  var listProduct = scala.collection.mutable.ListBuffer[Product]()
-  
-  try {
-    val statement = connection.createStatement
-    val res = statement.executeQuery("SELECT * FROM products")
-    while(res.next){
-      val productId = res.getInt("id")
-      val productBrand = res.getInt("brand")
-      val productName = res.getString("name")
-      val productDate = res.getDate("date")
-
-      val product = new Product(productId, productBrand, productName, productDate)
-      listProduct += product
-    }
-  } catch {
-    case e: Exception => e.getMessage
-    println("error getting products " + e.getMessage)
-  } finally  {
-    listProduct.foreach{
-      product => Logger.info(product.toString)
-    }
-    connection.close
-  }
-  listProduct
   }
 }
