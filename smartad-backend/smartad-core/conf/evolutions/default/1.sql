@@ -1,13 +1,13 @@
+# --- Created by Slick DDL
+# To stop Slick DDL generation, remove this comment and start using Evolutions
+
 # --- !Ups
 
-create table Marketplace (
-    id int primary key not null auto_increment,
-    name varchar(255) not null,
-    email varchar(255) not null,
-    contact smallint not null
-  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
+create table `Brand` (`id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,`name` VARCHAR(254) NOT NULL,`color` VARCHAR(254) NOT NULL);
+create table `Product` (`id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,`name` VARCHAR(254) NOT NULL,`brand` BIGINT NOT NULL,`price` DOUBLE NOT NULL,`created` BIGINT);
 
 # --- !Downs
 
-drop table Marketplace;
+drop table `Product`;
+drop table `Brand`;
+
