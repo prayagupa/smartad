@@ -1,8 +1,8 @@
 # --- !Ups
 
-create table BRAND (name VARCHAR(100) PRIMARY KEY,color VARCHAR(100));
+create table Brand (id int primary key not null auto_increment, name VARCHAR(100),color VARCHAR(100));
 
 # --- !Downs
 
-drop table "BRAND";
+drop table "Brand";
 
