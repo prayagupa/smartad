@@ -34,21 +34,25 @@ object ProductController extends Controller {
   val productsQuery = TableQuery[ProductTable]
   val marketplacesQuery = TableQuery[MarketplaceTable]
 
-  implicit val reads = (
-    (__ \ 'name).read[String] and
-    (__ \ 'brand).read[Long]
-   ) tupled
+//  implicit val reads = (
+//    (__ \ 'name).read[String],
+//    (__ \ 'brand).read[Long] and
+//    (__ \ 'marketplace).read[Long]
+//   ) tupled
 
+  implicit val reads_ = Json.reads[Product]
 
   def add  = DBAction(parse.json) { implicit request =>
    Logger.info("adding")
-   request.body.validate[(String, Long)].map{
-        case (name, brand) => 
-              productsQuery.insert(new Product(Option.empty, name, brand, 1, 100, Option.empty))
+   request.body.validate(reads_).map{
+        p => 
+              productsQuery.insert(p)
               Ok(Json.obj("status" ->"OK", 
-                          "message" -> ("Product "+name+", saved successfully.") ))
+                          "message" -> ("Product "+p.name+", saved successfully.") ))
       }.recoverTotal{
-        e => BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toFlatJson(e)))
+        e =>
+                Logger.info("adding failed")
+		BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toFlatJson(e)))
       }
   }
 
