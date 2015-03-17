@@ -6,8 +6,8 @@ set -e
 
 #rm -rf input output classes wordcount.jar
 mkdir -p input classes
-echo "Post-rock Progressive-rock Folk-rock Progressive-rock" > input/file01
-echo "Post-rock Doom-metal Independent-rock Doom-metal" > input/file02
+echo "Post-rock Progressive-rock Folk-rock Progressive-rock" > src/main/Resources/file01
+echo "Post-rock Doom-metal Independent-rock Doom-metal" > src/main/Resource/file02
 
 #scalac -cp hadoop-*.jar:commons-logging-*.jar:commons-cli-*.jar -d classes WordCount.scala
 #jar -cvf wordcount.jar -C classes/ .

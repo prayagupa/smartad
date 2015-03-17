@@ -19,9 +19,12 @@ running scala GenreCount Job
 
 start hadoop cluster
 
+copy input resources
+
 ```
 hdfs dfs -mkdir -p /user/hduser/genrecount/input
-hdfs dfs -copyFromLocal input/file01 /user/hduser/genrecount/input
+hdfs dfs -copyFromLocal src/main/Resources/file01 /user/hduser/genrecount/input
+hdfs dfs -copyFromLocal src/main/Resources/file02 /user/hduser/genrecount/input
 ```
 
 2. install scala and make sure scalac is on your path
