@@ -14,14 +14,20 @@ hadoop 2.2.0
 running scala GenreCount Job
 =================================
 
-1. install hadoop and make sure the hadoop script is on your path
+1. install hadoop and make sure the hadoop script is on your PATH
 
 
 start hadoop cluster
 
+```
+/usr/local/hadoop-2.2.0/sbin/start-dfs.sh
+/usr/local/hadoop-2.2.0/sbin/start-yarn.sh
+```
+
 copy input resources
 
 ```
+ hdfs dfs -ls /user/hduser
 hdfs dfs -mkdir -p /user/hduser/genrecount/input
 hdfs dfs -copyFromLocal src/main/Resources/file01 /user/hduser/genrecount/input
 hdfs dfs -copyFromLocal src/main/Resources/file02 /user/hduser/genrecount/input

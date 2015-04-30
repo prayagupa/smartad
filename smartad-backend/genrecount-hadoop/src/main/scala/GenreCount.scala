@@ -31,7 +31,9 @@ class TokenizerMapper extends Mapper[Object,Text,Text,IntWritable] {
 class IntSumReducer extends Reducer[Text,IntWritable,Text,IntWritable] {
   override
   def reduce(key:Text, values:java.lang.Iterable[IntWritable], context:Reducer[Text,IntWritable,Text,IntWritable]#Context) = {
-    val sum = values.foldLeft(0) { (t,i) => t + i.get }
+    val sum = values.foldLeft(0) { (t,i) => 
+              t + i.get 
+    }
     context.write(key, new IntWritable(sum))
   }
 }
@@ -44,7 +46,7 @@ object GenreCount {
     val conf = new Configuration()
     val otherArgs = new GenericOptionsParser(conf, args).getRemainingArgs
     if (otherArgs.length != 2) {
-      println("Usage: wordcount <in> <out>")
+      println("Usage: genrecount <in> <out>")
       return 2
     }
     val job = new Job(conf, "word count")
