@@ -29,13 +29,13 @@ object AlsoBoughtPrediction {
     //mappers/reducers
     job.setMapperClass(classOf[PredictionStripesMapper])
     job.setOutputKeyClass(classOf[IntWritable])   //can throw RTException
-    job.setOutputValueClass(classOf[MapWritable]) //can throw RTException
+    job.setOutputValueClass(classOf[CustomMapWritable]) //can throw RTException
 
     //reducer
     //job.setCombinerClass(classOf[PredictionPairReducer])
     job.setReducerClass(classOf[PredictionStripesReducer])
     job.setOutputKeyClass(classOf[IntWritable])       //can throw RTException
-    job.setOutputValueClass(classOf[MapWritable]) //can throw RTException
+    job.setOutputValueClass(classOf[CustomMapWritable]) //can throw RTException
 
     //files
     FileInputFormat.addInputPath(job, new Path(args(0)))

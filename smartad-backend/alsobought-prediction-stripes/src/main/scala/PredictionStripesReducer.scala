@@ -11,25 +11,24 @@ import scala.collection.JavaConversions._
  * @date 05-11-2015
  */
 
-class PredictionStripesReducer extends Reducer[IntWritable,MapWritable, IntWritable, MapWritable] {
+class PredictionStripesReducer extends Reducer[IntWritable,CustomMapWritable, IntWritable, CustomMapWritable] {
 
   val asterick = new IntWritable(-1)
-  var sum : Double = 1
+  var sum : Double = 0
 
   override
-  def reduce(key:IntWritable, values:java.lang.Iterable[MapWritable], context:Reducer[IntWritable, MapWritable,IntWritable, MapWritable]#Context) = {
+  def reduce(key:IntWritable, values:java.lang.Iterable[CustomMapWritable], context:Reducer[IntWritable, CustomMapWritable,IntWritable, CustomMapWritable]#Context) = {
 
-    if (key.equals(asterick)) {
-      sum = 0
-      val map = new MapWritable()
-      map.put(new IntWritable(1), new IntWritable(1))
-      context.write(key, map)
-    } else {
-      val each = 1
-      val map = new MapWritable()
-      map.put(new IntWritable(1), new IntWritable(each))
-      context.write(key, map)
+    values.foreach{ map =>
+      map.foreach{ case (k : IntWritable, v : IntWritable) =>
+        sum+=v.get()
+      }
     }
+
+    val each = 1
+    val map = new CustomMapWritable()
+    map.put(new IntWritable(1), new IntWritable(each))
+    context.write(key, map)
   }
 }
 
