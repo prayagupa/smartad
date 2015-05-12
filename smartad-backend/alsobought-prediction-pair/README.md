@@ -7,8 +7,13 @@ AlsoBought counts the relative freq for products bought in amazon.
 Tools
 =========
 
-Scala 2.10.3
+```
+(Scala 2.10.3)[http://www.scala-lang.org/download/]
+sbt, http://www.scala-sbt.org/download.html
+scala intellij plugin, https://confluence.jetbrains.com/display/SCA/Scala+Plugin+for+IntelliJ+IDEA
+sbt intellij plugin, https://plugins.jetbrains.com/plugin/5007
 hadoop 2.2.0
+```
 
 running AlsoBought Job
 =================================
