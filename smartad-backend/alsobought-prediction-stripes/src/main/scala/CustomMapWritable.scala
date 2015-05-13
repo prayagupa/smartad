@@ -12,12 +12,12 @@ class CustomMapWritable extends MapWritable {
 
   override
   def toString() : String = {
-    val keys = this.keySet()
+    val keys = this.keySet().toList
     var string = ""
     for(writable <- keys) {
-      string+=s"(${writable}, ${this.get(writable)}),"
+      string+=s"(${writable}, ${this.get(writable)}) ,"
     }
-    string = "[" + string.substring(0, string.length-1) + "]"
+    string = string.substring(0, string.length-1)
 
     string
   }
