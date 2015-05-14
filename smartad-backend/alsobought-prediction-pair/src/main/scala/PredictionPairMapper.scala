@@ -17,6 +17,7 @@ class PredictionPairMapper extends Mapper[Object,Text,IntPair,DoubleWritable] {
   override
   def map(key:Object, value:Text, context:Mapper[Object,Text,IntPair,DoubleWritable]#Context) = {
     val tokens = value.toString().split("\\s")
+
     for (token <- 0 until tokens.length - 1) {
       breakable {
         for (nextToken <- token + 1 until tokens.length) {

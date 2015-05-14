@@ -14,8 +14,9 @@ class IntPair (first : IntWritable, second : IntWritable) extends WritableCompar
 //      val first = first_
 //      val second = second_
 
-      def this() = this(first = new IntWritable(), second = new IntWritable())
-      //def this() =  this(IntPair.init$default$1)
+      def this() = {
+        this(first = new IntWritable(), second = new IntWritable())
+      }
 
       @throws(classOf[IOException])
       @Override

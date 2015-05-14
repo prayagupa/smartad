@@ -13,7 +13,6 @@ import scala.collection.JavaConversions._
 
 class PredictionPairReducer extends Reducer[IntPair,DoubleWritable, IntPair,DoubleWritable] {
 
-  //val pairMap = scala.collection.mutable.Map[IntPair, Int]()
   val asterick = new IntWritable(-1)
   var sum : Double = _
 
@@ -26,7 +25,6 @@ class PredictionPairReducer extends Reducer[IntPair,DoubleWritable, IntPair,Doub
       }
       context.write(key, new DoubleWritable(sum))
     } else {
-      //pairMap += key -> values.foldLeft(0) {(state, elem) => state + elem.get}
       val each = values.foldLeft(0.0) {(state, elem) => state + elem.get}
       context.write(key, new DoubleWritable(each/sum))
     }
