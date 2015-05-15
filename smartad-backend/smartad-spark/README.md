@@ -58,7 +58,7 @@ package and submit app
 ```bash
 sbt package
 
-hdfs dfs -copyFromLocal src/main/resources/clientdata.txt /user/hduser/alsobought/input
+hdfs dfs -copyFromLocal -f src/main/resources/clientdata.txt /user/hduser/alsobought/input
 
 #from hdfs 2.2.0
 
@@ -132,17 +132,16 @@ hdfs dfs -copyFromLocal src/main/resources/clientdata.txt /user/hduser/alsobough
 ## output 
 hduser@prayagupd:/packup/workspace.programming/workspace.scala/smartad/smartad-backend/smartad-spark$ hdfs dfs -cat /user/hduser/alsobought/output/part-00000
 
-Vienna
-Young,And,Old
-Miniature,6
-Vienna
-This,Place
-The,Warm,Familiar,Smell,Of,September
+(Young And Old,2)
+(Miniature 6,1)
+(The Warm Familiar Smell Of September,1)
+
 
 hduser@prayagupd:/packup/workspace.programming/workspace.scala/smartad/smartad-backend/smartad-spark$ hdfs dfs -cat /user/hduser/alsobought/output/part-00001
 
-Drain,in,Flood
-Vienna
+(Vienna,4)
+(Drain in Flood,1)
+(This Place,1)
 
 
 ```

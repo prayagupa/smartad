@@ -48,11 +48,15 @@ object SongPlayCountApp {
 
     val files = sc.textFile(pathToFiles)
 
-    // do your work here
-    val rowsWithoutSpaces = files.map(_.replaceAll(" ", ","))
+    // replace spaces with commas
+    //val rowsWithoutSpaces = files.map(_.replaceAll(" ", ","))
+
+    val selectiveWordCount = files.flatMap(_.split(","))
+                                  .map((_,1))
+                                  .reduceByKey((_+_))
 
     // and save the result
-    rowsWithoutSpaces.saveAsTextFile(outputPath)
+    selectiveWordCount.saveAsTextFile(outputPath)
 
   }
 }
