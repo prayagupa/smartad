@@ -1,6 +1,6 @@
 import org.apache.spark.SparkContext
 import SparkContext._
-import domains.Movie
+
 /**
  * Created by prayagupd
  * on 5/16/15.
@@ -30,24 +30,24 @@ class RecommendationFactory (@transient sc : SparkContext) extends Serializable 
     val movieNames = movies.collectAsMap()    // for local use to map id <-> movie name for pretty-printing
 
     // extract (userid, movieid, rating) from ratings data
-    val ratings = sc.textFile(TRAIN_FILENAME)
+    val ratingsTrainMap = sc.textFile(TRAIN_FILENAME)
       .map(line => {
       val fields = line.split("\t")
       (fields(0).toInt, fields(1).toInt, fields(2).toInt)
     })
 
     // get num raters per movie, keyed on movie id
-    val numRatersPerMovie = ratings
-      .groupBy(tup => tup._2)
-      .map(grouped => (grouped._1, grouped._2.size))
+    val numRatersPerMovie = ratingsTrainMap
+                            .groupBy(tup => tup._2)
+                            .map(grouped => (grouped._1, grouped._2.size))
 
     // join ratings with num raters on movie id
-    val ratingsWithSize = ratings
-      .groupBy(tup => tup._2)
-      .join(numRatersPerMovie)
-      .flatMap(joined => {
-      joined._2._1.map(f => (f._1, f._2, f._3, joined._2._2))
-    })
+    val ratingsWithSize = ratingsTrainMap
+                          .groupBy(tup => tup._2)
+                          .join(numRatersPerMovie)
+                          .flatMap(joined => {
+                              joined._2._1.map(f => (f._1, f._2, f._3, joined._2._2))
+                        })
 
     // ratingsWithSize now contains the following fields: (user, movie, rating, numRaters).
 
@@ -97,11 +97,11 @@ class RecommendationFactory (@transient sc : SparkContext) extends Serializable 
         .map(fields => {
         val key = fields._1
         val (size, dotProduct, ratingSum, rating2Sum, ratingNormSq, rating2NormSq, numRaters, numRaters2) = fields._2
-        val corr = correlation(size, dotProduct, ratingSum, rating2Sum, ratingNormSq, rating2NormSq)
-        val regCorr = regularizedCorrelation(size, dotProduct, ratingSum, rating2Sum,
+        val corr = Measures.correlation(size, dotProduct, ratingSum, rating2Sum, ratingNormSq, rating2NormSq)
+        val regCorr = Measures.regularizedCorrelation(size, dotProduct, ratingSum, rating2Sum,
           ratingNormSq, rating2NormSq, PRIOR_COUNT, PRIOR_CORRELATION)
-        val cosSim = cosineSimilarity(dotProduct, scala.math.sqrt(ratingNormSq), scala.math.sqrt(rating2NormSq))
-        val jaccard = jaccardSimilarity(size, numRaters, numRaters2)
+        val cosSim = Measures.cosineSimilarity(dotProduct, scala.math.sqrt(ratingNormSq), scala.math.sqrt(rating2NormSq))
+        val jaccard = Measures.jaccardSimilarity(size, numRaters, numRaters2)
 
         (key, (corr, regCorr, cosSim, jaccard))
       })
@@ -129,60 +129,4 @@ class RecommendationFactory (@transient sc : SparkContext) extends Serializable 
       + " | " + r._5.formatted("%2.4f") + " | " + r._6.formatted("%2.4f")))
 
   }
-
-
-  // *************************
-  // * SIMILARITY MEASURES
-  // *************************
-
-  /**
-   * The correlation between two vectors A, B is
-   *   cov(A, B) / (stdDev(A) * stdDev(B))
-   *
-   * This is equivalent to
-   *   [n * dotProduct(A, B) - sum(A) * sum(B)] /
-   *     sqrt{ [n * norm(A)^2 - sum(A)^2] [n * norm(B)^2 - sum(B)^2] }
-   */
-  def correlation(size : Double, dotProduct : Double, ratingSum : Double,
-                  rating2Sum : Double, ratingNormSq : Double, rating2NormSq : Double) = {
-
-    val numerator = size * dotProduct - ratingSum * rating2Sum
-    val denominator = scala.math.sqrt(size * ratingNormSq - ratingSum * ratingSum) *
-      scala.math.sqrt(size * rating2NormSq - rating2Sum * rating2Sum)
-
-    numerator / denominator
-  }
-
-  /**
-   * Regularize correlation by adding virtual pseudocounts over a prior:
-   *   RegularizedCorrelation = w * ActualCorrelation + (1 - w) * PriorCorrelation
-   * where w = # actualPairs / (# actualPairs + # virtualPairs).
-   */
-  def regularizedCorrelation(size : Double, dotProduct : Double, ratingSum : Double,
-                             rating2Sum : Double, ratingNormSq : Double, rating2NormSq : Double,
-                             virtualCount : Double, priorCorrelation : Double) = {
-
-    val unregularizedCorrelation = correlation(size, dotProduct, ratingSum, rating2Sum, ratingNormSq, rating2NormSq)
-    val w = size / (size + virtualCount)
-
-    w * unregularizedCorrelation + (1 - w) * priorCorrelation
-  }
-
-  /**
-   * The cosine similarity between two vectors A, B is
-   *   dotProduct(A, B) / (norm(A) * norm(B))
-   */
-  def cosineSimilarity(dotProduct : Double, ratingNorm : Double, rating2Norm : Double) = {
-    dotProduct / (ratingNorm * rating2Norm)
-  }
-
-  /**
-   * The Jaccard Similarity between two sets A, B is
-   *   |Intersection(A, B)| / |Union(A, B)|
-   */
-  def jaccardSimilarity(usersInCommon : Double, totalUsers1 : Double, totalUsers2 : Double) = {
-    val union = totalUsers1 + totalUsers2 - usersInCommon
-    usersInCommon / union
-  }
-
 }
