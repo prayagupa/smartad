@@ -1,3 +1,4 @@
+import domains.MongoConnector
 import org.apache.spark.SparkContext
 import SparkContext._
 
@@ -6,7 +7,7 @@ import SparkContext._
  * on 5/16/15.
  */
 
-class RecommendationFactory (@transient sc : SparkContext) extends Serializable {
+class Recommender (@transient sc : SparkContext) extends Serializable {
 
   /**
    * Parameters to regularize correlation.
@@ -18,6 +19,7 @@ class RecommendationFactory (@transient sc : SparkContext) extends Serializable 
   val TEST_FIELNAME = "ua.test"
   val MOVIES_FILENAME = "u.item"
 
+  @transient val db = new MongoConnector
   def predict(movieName : String): Unit = {
 
     // get movie names keyed on id

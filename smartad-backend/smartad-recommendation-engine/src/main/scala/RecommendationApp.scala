@@ -18,7 +18,7 @@ object RecommendationApp {
     val master = args(0)
     val movieName = args(1) // "Star Wars (1977)"
     val sc = new SparkContext(master, "Recommendation App")
-    val recommender = new RecommendationFactory(sc)
+    val recommender = new Recommender(sc)
     recommender.predict(movieName)
   }
 

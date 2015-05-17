@@ -99,7 +99,7 @@ hdfs dfs -copyFromLocal src/main/resources/ml-100k/ua.test /user/hduser/
 hdfs dfs -copyFromLocal src/main/resources/ml-100k/u.item /user/hduser/
 
 
-sbt package
+sbt assembly ##instead of just package
 
 
 /usr/local/spark-1.2.0/bin/spark-submit --class RecommendationApp --master spark://prayagupd:7077 target/scala-2.10/smartad-recommendation-engine_2.10-1.0.jar spark://prayagupd:7077 "Twelve Monkeys"
