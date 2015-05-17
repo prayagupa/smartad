@@ -8,12 +8,12 @@ import org.apache.spark.SparkContext
 import SparkContext._
 
 /**
- * A port of http://blog.echen.me/2012/02/09/movie-recommendations-and-more-via-mapreduce-and-scalding/
- * to Spark.
+ * Spark port of http://blog.echen.me/2012/02/09/movie-recommendations-and-more-via-mapreduce-and-scalding/
+ *
  * Uses movie ratings data from MovieLens 100k dataset found at http://www.grouplens.org/node/73
  */
 
-object MovieSimilarities {
+object RecommendationApp {
 
   def main(args: Array[String]) {
 
@@ -21,9 +21,10 @@ object MovieSimilarities {
      * Spark programs require a SparkContext to be initialized
      */
     val master = args(0)
-    val sc = new SparkContext(master, "MovieSimilarities")
+    val movieName = args(1) // "Star Wars (1977)"
+    val sc = new SparkContext(master, "Recommendation App")
     val recommender = new RecommendationFactory(sc)
-    recommender.predict()
+    recommender.predict(movieName)
   }
 
 }

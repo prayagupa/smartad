@@ -10,4 +10,10 @@ libraryDependencies += "org.apache.spark" %% "spark-core" % sparkVersion
 
 libraryDependencies += "org.apache.spark" %% "spark-mllib" % sparkVersion
 
+libraryDependencies ++= Seq(
+  "org.reactivemongo" %% "reactivemongo" % "0.10.0"
+)
+
+resolvers += "Typesafe repository releases" at "http://repo.typesafe.com/typesafe/releases/"
+
 //resolvers += "Akka Repository" at "http://repo.akka.io/releases/"

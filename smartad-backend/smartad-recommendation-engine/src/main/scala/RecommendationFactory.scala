@@ -1,12 +1,12 @@
 import org.apache.spark.SparkContext
 import SparkContext._
-
+import domains.Movie
 /**
  * Created by prayagupd
  * on 5/16/15.
  */
 
-class RecommendationFactory (sc : SparkContext) {
+class RecommendationFactory (@transient sc : SparkContext) extends Serializable {
 
   /**
    * Parameters to regularize correlation.
@@ -18,7 +18,7 @@ class RecommendationFactory (sc : SparkContext) {
   val TEST_FIELNAME = "ua.test"
   val MOVIES_FILENAME = "u.item"
 
-  def predict(): Unit = {
+  def predict(movieName : String): Unit = {
 
     // get movie names keyed on id
     val movies = sc.textFile(MOVIES_FILENAME)
@@ -107,10 +107,9 @@ class RecommendationFactory (sc : SparkContext) {
       })
 
     // test a few movies out (substitute the contains call with the relevant movie name
-    //FIXME pass a name
     val sample = similarities.filter(m => {
       val movies = m._1
-      (movieNames(movies._1).contains("Star Wars (1977)"))
+      (movieNames(movies._1).contains(movieName))
     })
 
     // collect results, excluding NaNs if applicable
