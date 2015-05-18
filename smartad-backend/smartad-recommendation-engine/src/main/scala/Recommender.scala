@@ -1,6 +1,7 @@
 import domains.MongoConnector
 import org.apache.spark.SparkContext
 import SparkContext._
+import reactivemongo.bson.{BSONInteger, BSONDocument}
 
 /**
  * Created by prayagupd
@@ -19,8 +20,17 @@ class Recommender (@transient sc : SparkContext) extends Serializable {
   val TEST_FIELNAME = "ua.test"
   val MOVIES_FILENAME = "u.item"
 
-  @transient val db = new MongoConnector
+  @transient val db = new MongoConnector()
+
+
   def predict(movieName : String): Unit = {
+    db.list(movieName)
+  }
+
+  def init (): Unit = {
+
+    println(s"db ${db}")
+    db.connect()
 
     // get movie names keyed on id
     val movies = sc.textFile(MOVIES_FILENAME)
@@ -40,16 +50,16 @@ class Recommender (@transient sc : SparkContext) extends Serializable {
 
     // get num raters per movie, keyed on movie id
     val numRatersPerMovie = ratingsTrainMap
-                            .groupBy(tup => tup._2)
-                            .map(grouped => (grouped._1, grouped._2.size))
+      .groupBy(tup => tup._2)
+      .map(grouped => (grouped._1, grouped._2.size))
 
     // join ratings with num raters on movie id
     val ratingsWithSize = ratingsTrainMap
-                          .groupBy(tup => tup._2)
-                          .join(numRatersPerMovie)
-                          .flatMap(joined => {
-                              joined._2._1.map(f => (f._1, f._2, f._3, joined._2._2))
-                        })
+      .groupBy(tup => tup._2)
+      .join(numRatersPerMovie)
+      .flatMap(joined => {
+      joined._2._1.map(f => (f._1, f._2, f._3, joined._2._2))
+    })
 
     // ratingsWithSize now contains the following fields: (user, movie, rating, numRaters).
 
@@ -99,36 +109,63 @@ class Recommender (@transient sc : SparkContext) extends Serializable {
         .map(fields => {
         val key = fields._1
         val (size, dotProduct, ratingSum, rating2Sum, ratingNormSq, rating2NormSq, numRaters, numRaters2) = fields._2
-        val corr = Measures.correlation(size, dotProduct, ratingSum, rating2Sum, ratingNormSq, rating2NormSq)
-        val regCorr = Measures.regularizedCorrelation(size, dotProduct, ratingSum, rating2Sum,
-          ratingNormSq, rating2NormSq, PRIOR_COUNT, PRIOR_CORRELATION)
-        val cosSim = Measures.cosineSimilarity(dotProduct, scala.math.sqrt(ratingNormSq), scala.math.sqrt(rating2NormSq))
-        val jaccard = Measures.jaccardSimilarity(size, numRaters, numRaters2)
+        val corRelation            = Measures.correlation(size, dotProduct, ratingSum, rating2Sum, ratingNormSq, rating2NormSq)
+        val regularizedCorRelation = Measures.regularizedCorrelation(size, dotProduct, ratingSum, rating2Sum, ratingNormSq, rating2NormSq, PRIOR_COUNT, PRIOR_CORRELATION)
+        val cosineSimilarity       = Measures.cosineSimilarity(dotProduct, scala.math.sqrt(ratingNormSq), scala.math.sqrt(rating2NormSq))
+        val jaccardSimilarity      = Measures.jaccardSimilarity(size, numRaters, numRaters2)
 
-        (key, (corr, regCorr, cosSim, jaccard))
+        (key, (corRelation, regularizedCorRelation, cosineSimilarity, jaccardSimilarity))
       })
 
+    //persit to mongo
+
+    println(s"==================================")
+    println(s"trying to insert each of similarities ")
+    val array = similarities.collect()
+    println(s"trying to insert each of similarities ${array.length}")
+    array.foreach { case (k, v) =>
+      println(s"==================================")
+      //println(s"(${k._1}, ${k._2})")
+      //      val json = BSONDocument("id" -> 1,
+      //        "similarId" -> 2)
+      val x = if(v._2.equals(Double.NaN)) 0 else v._2
+      val json = BSONDocument("id" -> k._1,
+        "title" -> movieNames(k._1),
+        "similarId" -> k._2,
+        "similarTitle" -> movieNames(k._2),
+        "regularizedCorRelation" -> x)
+
+      println(s"inserting each doc to ${db}")
+      db.insert(json)
+      println(s"==================================")
+    }
+
+    println(s"after insertion")
+    println(s"==================================")
     // test a few movies out (substitute the contains call with the relevant movie name
-    val sample = similarities.filter(m => {
-      val movies = m._1
-      (movieNames(movies._1).contains(movieName))
-    })
-
-    // collect results, excluding NaNs if applicable
-    val result = sample.map(v => {
-      val m1 = v._1._1
-      val m2 = v._1._2
-      val corr = v._2._1
-      val rcorr = v._2._2
-      val cos = v._2._3
-      val j = v._2._4
-      (movieNames(m1), movieNames(m2), corr, rcorr, cos, j)
-    }).collect().filter(e => !(e._4 equals Double.NaN))    // test for NaNs must use equals rather than ==
-      .sortBy(elem => elem._4).take(10)
-
-    // print the top 10 out
-    result.foreach(r => println(r._1 + " | " + r._2 + " | " + r._3.formatted("%2.4f") + " | " + r._4.formatted("%2.4f")
-      + " | " + r._5.formatted("%2.4f") + " | " + r._6.formatted("%2.4f")))
+    //    val sample = similarities.filter(m => {
+    //      val movies = m._1
+    //      (movieNames(movies._1).contains(movieName))
+    //    })
+    //
+    //    // collect results, excluding NaNs if applicable
+    //    val result = sample.map(v => {
+    //      val m1 = v._1._1
+    //      val m2 = v._1._2
+    //      val corr = v._2._1
+    //      val rcorr = v._2._2
+    //      val cos = v._2._3
+    //      val j = v._2._4
+    //      (movieNames(m1), movieNames(m2), corr, rcorr, cos, j)
+    //    }).collect()
+    //      .filter(e => !(e._4 equals Double.NaN))    // test for NaNs must use equals rather than ==
+    //      .sortBy(elem => elem._4)
+    //      .take(10)
+    //
+    //    // print the top 10 out
+    //    result.foreach(r =>
+    //      println(r._1 + " | " + r._2 + " | " + r._3.formatted("%2.4f") + " | " + r._4.formatted("%2.4f") + " | " + r._5.formatted("%2.4f") + " | " + r._6.formatted("%2.4f"))
+    //    )
 
   }
 }

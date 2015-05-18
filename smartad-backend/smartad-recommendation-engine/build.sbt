@@ -10,7 +10,7 @@ libraryDependencies += "org.apache.spark" %% "spark-core" % sparkVersion % "prov
 
 //libraryDependencies += "org.apache.spark" %% "spark-mllib" % sparkVersion
 
-libraryDependencies += "org.reactivemongo" %% "reactivemongo" % "0.10.0"
+libraryDependencies += "org.reactivemongo" %% "reactivemongo" % "0.10.5.0.akka23"
 
 resolvers += "Typesafe repository releases" at "http://repo.typesafe.com/typesafe/releases/"
 
