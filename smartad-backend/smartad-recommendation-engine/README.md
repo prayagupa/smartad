@@ -66,7 +66,7 @@ Test file (ua.test)
 ============
 
 ```
-
+userid, movieid, rating
 1	20	4	887431883
 1	33	4	878542699
 1	61	4	878542420
@@ -101,7 +101,6 @@ hdfs dfs -copyFromLocal src/main/resources/ml-100k/u.item /user/hduser/
 
 sbt assembly ##instead of just package
 
-
 /usr/local/spark-1.2.0/bin/spark-submit --class RecommendationApp --master spark://prayagupd:7077 target/scala-2.10/smartad-recommendation-engine_2.10-1.0.jar spark://prayagupd:7077 "Twelve Monkeys"
 ...
 ...
@@ -119,5 +118,9 @@ Twelve Monkeys (1995) | Devil in a Blue Dress (1995) | -0.3536 | -0.2784 | 0.895
 Twelve Monkeys (1995) | Two Much (1996) | -0.9685 | -0.2767 | 0.5995 | 0.0115
 Twelve Monkeys (1995) | Ace Ventura: When Nature Calls (1995) | -0.3871 | -0.2765 | 0.9014 | 0.0702
 Twelve Monkeys (1995) | FairyTale: A True Story (1997) | -0.6650 | -0.2738 | 0.7350 | 0.0193
+
+
+##check mongo
+db.movies.find({title: /^Twelve Monkeys/}).sort({regularizedCorRelation : 1}).limit(10);
 
 ```

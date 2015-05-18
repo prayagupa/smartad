@@ -19,14 +19,14 @@ object Measures {
    */
   def correlation(size : Double,
                   dotProduct : Double,
-                  ratingSum : Double,
+                  rating1Sum : Double,
                   rating2Sum : Double,
-                  ratingNormSq : Double,
+                  rating1NormSq : Double,
                   rating2NormSq : Double) = {
 
-    val numerator = size * dotProduct - ratingSum * rating2Sum
-    val denominator = scala.math.sqrt(size * ratingNormSq - ratingSum * ratingSum) *
-      scala.math.sqrt(size * rating2NormSq - rating2Sum * rating2Sum)
+    val numerator = size * dotProduct - rating1Sum * rating2Sum
+    val denominator = scala.math.sqrt(size * rating1NormSq - rating1Sum * rating1Sum) *
+                      scala.math.sqrt(size * rating2NormSq - rating2Sum * rating2Sum)
 
     numerator / denominator
   }

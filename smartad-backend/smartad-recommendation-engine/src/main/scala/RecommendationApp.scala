@@ -16,11 +16,17 @@ object RecommendationApp {
      * Spark programs require a SparkContext to be initialized
      */
     val master = args(0)
-    val movieName = args(1) // "Star Wars (1977)"
+    val arg1 = args(1) // "Star Wars (1977)"
+
     val sc = new SparkContext(master, "Recommendation App")
     val recommender = new Recommender(sc)
-    //recommender.init()
-    recommender.predict(movieName)
+    if(arg1.equals("process")) {
+      recommender.init()
+    } else {
+      recommender.predict(arg1)
+    }
+
+    println("============== complete ==================")
   }
 
 }

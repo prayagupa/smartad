@@ -7,6 +7,7 @@ import reactivemongo.bson._
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import scala.util.control.Breaks
 import scala.util.{Success, Failure}
 
 /**
@@ -50,19 +51,42 @@ class MongoConnector extends DatabaseConnector {
   }
 
   override def list(name : String): List[Movie] = {
-    val list : ListBuffer[Movie] = ListBuffer()
+    val listBuffer : ListBuffer[Movie] = ListBuffer.empty[Movie]
 
-    val query = BSONDocument("id" -> BSONInteger(name.toInt))
-    val cursor = collection.find(query).cursor[BSONDocument]
+    val query = BSONDocument("title" -> BSONString("//^"+name+"//")) //like
+    val sortQ = BSONDocument("regularizedCorRelation" -> BSONInteger(1))
+    val cursor = collection.find(query).sort(sortQ).options(QueryOpts().batchSize(10)).cursor[BSONDocument]
     val futureList :  Future[List[BSONDocument]] = cursor.collect[List]()
-    futureList.map { list =>
-      println("====================== list values =============================")
-      list.foreach{ document =>
-        println(" | " + BSONDocument.pretty(document))
-      }
-      //val m = new Movie()
-      //list +=
+
+    implicit object MovieReader extends BSONReader[BSONValue, String] {
+      def read(v: BSONValue) =
+        v match {
+          case oid: BSONObjectID => oid.stringify
+          case BSONInteger(i) => i.toString
+          case BSONLong(l) => l.toString
+          case BSONDouble(d) => d.toString
+        }
     }
-    list.toList
+
+    var counter : Int = 0
+    futureList.map { movies =>
+      println("====================== list * similar movies =============================")
+      Breaks.breakable {
+        movies.foreach { movie =>
+          if (counter >= 10) {
+            Breaks.break()
+          }
+          val title = movie.get("title").get
+          val similarTitle = movie.get("similarTitle").get
+
+          println(s"       | ${similarTitle}")
+
+          //val m = new Movie(id.get.asInstanceOf[Int], similarId.get.asInstanceOf[String])
+          //        listBuffer += movie
+          counter = counter + 1
+        }
+      }
+    }
+    listBuffer.toList
   }
 }
