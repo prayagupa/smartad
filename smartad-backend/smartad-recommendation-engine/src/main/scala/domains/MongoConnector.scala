@@ -53,7 +53,7 @@ class MongoConnector extends DatabaseConnector {
   override def list(name : String): List[Movie] = {
     val listBuffer : ListBuffer[Movie] = ListBuffer.empty[Movie]
 
-    val query = BSONDocument("title" -> BSONString("//^"+name+"//")) //like
+    val query = BSONDocument("title" -> BSONRegex(name+".*", "")) //like
     val sortQ = BSONDocument("regularizedCorRelation" -> BSONInteger(1))
     val cursor = collection.find(query).sort(sortQ).options(QueryOpts().batchSize(10)).cursor[BSONDocument]
     val futureList :  Future[List[BSONDocument]] = cursor.collect[List]()
