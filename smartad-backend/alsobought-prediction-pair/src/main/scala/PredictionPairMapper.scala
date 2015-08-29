@@ -10,12 +10,12 @@ import scala.util.control.Breaks._
  */
 
 
-class PredictionPairMapper extends Mapper[Object,Text,IntPair,DoubleWritable] {
+class PredictionPairMapper extends Mapper[Object,Text,IntPairWritable,DoubleWritable] {
   val one = new DoubleWritable(1.0)
   val asterick = new IntWritable(-1)
 
   override
-  def map(key:Object, value:Text, context:Mapper[Object,Text,IntPair,DoubleWritable]#Context) = {
+  def map(key:Object, value:Text, context:Mapper[Object,Text,IntPairWritable,DoubleWritable]#Context) = {
     val tokens = value.toString().split("\\s")
 
     for (token <- 0 until tokens.length - 1) {
@@ -24,8 +24,8 @@ class PredictionPairMapper extends Mapper[Object,Text,IntPair,DoubleWritable] {
           if (tokens(token).equals(tokens(nextToken))) {
             break
           }
-          val pair         = new IntPair(new IntWritable(tokens(token).toInt), new IntWritable(tokens(nextToken).toInt))
-          val pairAsterick = new IntPair(new IntWritable(tokens(token).toInt), asterick)
+          val pair         = new IntPairWritable(new IntWritable(tokens(token).toInt), new IntWritable(tokens(nextToken).toInt))
+          val pairAsterick = new IntPairWritable(new IntWritable(tokens(token).toInt), asterick)
           context.write(pair, one)
           context.write(pairAsterick, one)
         }

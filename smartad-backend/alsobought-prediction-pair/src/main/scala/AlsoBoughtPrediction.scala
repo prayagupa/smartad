@@ -28,13 +28,13 @@ object AlsoBoughtPrediction {
 
     //mappers/reducers
     job.setMapperClass(classOf[PredictionPairMapper])
-    job.setOutputKeyClass(classOf[IntPair]) //can throw RTException
+    job.setOutputKeyClass(classOf[IntPairWritable]) //can throw RTException
     job.setOutputValueClass(classOf[DoubleWritable]) //can throw RTException
 
     //reducer
     //job.setCombinerClass(classOf[PredictionPairReducer])
     job.setReducerClass(classOf[PredictionPairReducer])
-    job.setOutputKeyClass(classOf[IntPair]) //can throw RTException
+    job.setOutputKeyClass(classOf[IntPairWritable]) //can throw RTException
     job.setOutputValueClass(classOf[DoubleWritable]) //can throw RTException
 
     //files

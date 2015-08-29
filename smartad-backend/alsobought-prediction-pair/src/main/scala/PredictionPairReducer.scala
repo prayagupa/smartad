@@ -11,13 +11,13 @@ import scala.collection.JavaConversions._
  * @date 05-11-2015
  */
 
-class PredictionPairReducer extends Reducer[IntPair,DoubleWritable, IntPair,DoubleWritable] {
+class PredictionPairReducer extends Reducer[IntPairWritable,DoubleWritable, IntPairWritable,DoubleWritable] {
 
   val asterick = new IntWritable(-1)
   var sum : Double = _
 
   override
-  def reduce(key:IntPair, values:java.lang.Iterable[DoubleWritable], context:Reducer[IntPair,DoubleWritable,IntPair,DoubleWritable]#Context) = {
+  def reduce(key:IntPairWritable, values:java.lang.Iterable[DoubleWritable], context:Reducer[IntPairWritable,DoubleWritable,IntPairWritable,DoubleWritable]#Context) = {
 
     if (key.getSecond().equals(asterick)) {
       sum = values.foldLeft(0.0) { (state, elem) =>
