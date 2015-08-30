@@ -1,4 +1,4 @@
-import org.apache.hadoop.io.{DoubleWritable, IntWritable, Text}
+import org.apache.hadoop.io.{MapWritable, DoubleWritable, IntWritable, Text}
 import org.apache.hadoop.mapreduce.Reducer
 
 import scala.collection.JavaConversions._
@@ -11,23 +11,28 @@ import scala.collection.JavaConversions._
  * @date 05-11-2015
  */
 
-class PredictionPairReducer extends Reducer[IntPairWritable,DoubleWritable, IntPairWritable,DoubleWritable] {
+class PredictionPairReducer extends Reducer[IntPairWritable,DoubleWritable, IntPairWritable,MapWritable] {
 
   val asterick = new IntWritable(-1)
   var sum : Double = _
 
   override
-  def reduce(key:IntPairWritable, values:java.lang.Iterable[DoubleWritable], context:Reducer[IntPairWritable,DoubleWritable,IntPairWritable,DoubleWritable]#Context) = {
+  def reduce(key:IntPairWritable, values:java.lang.Iterable[DoubleWritable], context:Reducer[IntPairWritable,DoubleWritable,IntPairWritable,MapWritable]#Context) = {
 
     if (key.getSecond().equals(asterick)) {
       sum = values.foldLeft(0.0) { (state, elem) =>
         state + elem.get()
       }
-      context.write(key, new DoubleWritable(sum))
+      val mapWritable = new MapWritable()
+      mapWritable.put(key, new DoubleWritable(sum))
+      context.write(key, mapWritable)
     } else {
       val each = values.foldLeft(0.0) {(state, elem) => state + elem.get}
-      context.write(key, new DoubleWritable(each/sum))
+      val mapWritable = new MapWritable()
+      mapWritable.put(key, new DoubleWritable(each/sum))
+      context.write(key, mapWritable)
     }
   }
+
 }
 

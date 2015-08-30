@@ -15,6 +15,10 @@ sbt intellij plugin, https://plugins.jetbrains.com/plugin/5007
 hadoop 2.2.0
 ```
 
+```
+curl -XPUT 'localhost:9204/alsobought?pretty'
+```
+
 running AlsoBought Job
 =================================
 
@@ -24,6 +28,7 @@ running AlsoBought Job
 start hadoop cluster
 
 ```
+su - hduser
 /usr/local/hadoop-2.2.0/sbin/start-dfs.sh
 /usr/local/hadoop-2.2.0/sbin/start-yarn.sh
 ```
@@ -31,10 +36,10 @@ start hadoop cluster
 copy input resources
 
 ```
- hdfs dfs -ls /user/hduser
+hdfs dfs -ls /user/hduser
 hdfs dfs -mkdir -p /user/hduser/alsobought/input
-hdfs dfs -copyFromLocal -f src/main/Resources/file01 /user/hduser/alsobought/input
-hdfs dfs -copyFromLocal -f src/main/Resources/file02 /user/hduser/alsobought/input
+hdfs dfs -copyFromLocal -f src/main/Resources/customer_file01 /user/hduser/alsobought/input
+hdfs dfs -copyFromLocal -f src/main/Resources/customer_file02 /user/hduser/alsobought/input
 
 hdfs dfs -rm -r /user/hduser/alsobought/output/
 ```
@@ -67,7 +72,7 @@ Found 2 items
 
 ```
 
-cat output
+cat output without es
  
  ```
  hduser@prayagupd:/p/w/w/GenreCount-scaldoop$ hdfs dfs -cat /user/hduser/alsobought/output/part-r-00000
@@ -131,3 +136,85 @@ cat output
  ( 92, 34 ) 	0.3333333333333333
 
  ```
+
+output with es
+------------------
+
+```
+$ curl -XGET "localhost:9204/alsobought/AlsoBought/_search?pretty=true"
+{
+  "took" : 4,
+  "timed_out" : false,
+  "_shards" : {
+    "total" : 5,
+    "successful" : 5,
+    "failed" : 0
+  },
+  "hits" : {
+    "total" : 49,
+    "max_score" : 1.0,
+    "hits" : [ {
+      "_index" : "alsobought",
+      "_type" : "AlsoBought",
+      "_id" : "xXw0ijI5RQK_Gh2UPLg4uw",
+      "_score" : 1.0,
+      "_source":{"( 12, 92 ) ":0.18181818181818182}
+    }, {
+      "_index" : "alsobought",
+      "_type" : "AlsoBought",
+      "_id" : "JisjVEu3SsKqh3hNEHljUg",
+      "_score" : 1.0,
+      "_source":{"( 18, 34 ) ":0.25}
+    }, {
+      "_index" : "alsobought",
+      "_type" : "AlsoBought",
+      "_id" : "NrKF-VsAQva720JFt7tsYQ",
+      "_score" : 1.0,
+      "_source":{"( 18, 79 ) ":0.125}
+    }, {
+      "_index" : "alsobought",
+      "_type" : "AlsoBought",
+      "_id" : "W1jDMu-zTG6E10o_tDDuAw",
+      "_score" : 1.0,
+      "_source":{"( 29, 12 ) ":0.26666666666666666}
+    }, {
+      "_index" : "alsobought",
+      "_type" : "AlsoBought",
+      "_id" : "lLXr3nyBROa_7w0azQj0YA",
+      "_score" : 1.0,
+      "_source":{"( 29, 18 ) ":0.06666666666666667}
+    }, {
+      "_index" : "alsobought",
+      "_type" : "AlsoBought",
+      "_id" : "-UyhgTv3QSSFnKhxPCxCmA",
+      "_score" : 1.0,
+      "_source":{"( 79, 18 ) ":0.2}
+    }, {
+      "_index" : "alsobought",
+      "_type" : "AlsoBought",
+      "_id" : "R7YSgD_lQVyqIdeYmuijyA",
+      "_score" : 1.0,
+      "_source":{"( 12, -1 ) ":11.0}
+    }, {
+      "_index" : "alsobought",
+      "_type" : "AlsoBought",
+      "_id" : "AL4SnyzIRXifpP5WmwcQjw",
+      "_score" : 1.0,
+      "_source":{"( 12, 10 ) ":0.09090909090909091}
+    }, {
+      "_index" : "alsobought",
+      "_type" : "AlsoBought",
+      "_id" : "bY8PqJstRSuN0H62DcYd9Q",
+      "_score" : 1.0,
+      "_source":{"( 12, 18 ) ":0.09090909090909091}
+    }, {
+      "_index" : "alsobought",
+      "_type" : "AlsoBought",
+      "_id" : "cRnqEPahSWqdvIHVG3A4rQ",
+      "_score" : 1.0,
+      "_source":{"( 12, 79 ) ":0.09090909090909091}
+    } ]
+  }
+}
+
+```

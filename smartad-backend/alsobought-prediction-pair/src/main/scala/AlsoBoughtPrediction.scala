@@ -1,10 +1,11 @@
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
-import org.apache.hadoop.io.{DoubleWritable, IntWritable, Text}
+import org.apache.hadoop.io.{MapWritable, DoubleWritable, IntWritable, Text}
 import org.apache.hadoop.mapreduce.Job
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 import org.apache.hadoop.util.GenericOptionsParser
+import org.elasticsearch.hadoop.mr.EsOutputFormat
 
 // This class configures and runs the job with the map and reduce classes we've
 // specified above.
@@ -26,16 +27,23 @@ object AlsoBoughtPrediction {
     val job = new Job(conf, "People also bought suggestion")
     job.setJarByClass(classOf[PredictionPairMapper])
 
+    //start of es configuration
+    val configuration : Configuration = job.getConfiguration
+    configuration.set("es.nodes","localhost:9204")
+    configuration.set("es.resource","alsobought/AlsoBought")
+    job.setOutputFormatClass(classOf[EsOutputFormat])
+    //end of es configuration
+
     //mappers/reducers
     job.setMapperClass(classOf[PredictionPairMapper])
-    job.setOutputKeyClass(classOf[IntPairWritable]) //can throw RTException
-    job.setOutputValueClass(classOf[DoubleWritable]) //can throw RTException
+    job.setMapOutputKeyClass(classOf[IntPairWritable]) //can throw RTException
+    job.setMapOutputValueClass(classOf[DoubleWritable]) //can throw RTException
 
     //reducer
     //job.setCombinerClass(classOf[PredictionPairReducer])
     job.setReducerClass(classOf[PredictionPairReducer])
     job.setOutputKeyClass(classOf[IntPairWritable]) //can throw RTException
-    job.setOutputValueClass(classOf[DoubleWritable]) //can throw RTException
+    job.setOutputValueClass(classOf[MapWritable]) //can throw RTException
 
     //files
     FileInputFormat.addInputPath(job, new Path(args(0)))
