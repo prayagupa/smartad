@@ -22,7 +22,7 @@ import kafka.message.MessageAndOffset;
 
 public class EventConsumerService extends  Thread {
         final static String clientId = "EventConsumerService";
-        final static String TOPIC = "smartad_test";
+        final static String TOPIC = "smartad_events";
         ConsumerConnector consumerConnector;
 
         public EventConsumerService(){

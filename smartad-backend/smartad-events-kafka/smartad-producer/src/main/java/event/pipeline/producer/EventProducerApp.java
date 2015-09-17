@@ -7,7 +7,7 @@ package event.pipeline.producer;
 
 public class EventProducerApp {
     public static void main(String[] argv){
-        EventProducer eventProducer = new EventProducer("smartad_test");
+        EventProducer eventProducer = new EventProducer("smartad_events");
 //        eventProducer.sendMessage("smartad_test_different");
         eventProducer.start();
     }
