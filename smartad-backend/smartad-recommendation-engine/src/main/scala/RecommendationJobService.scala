@@ -8,7 +8,7 @@ import reactivemongo.bson.{BSONInteger, BSONDocument}
  * on 5/16/15.
  */
 
-class Recommender (@transient sc : SparkContext) extends Serializable {
+class RecommendationJobService (@transient sc : SparkContext) extends Serializable {
 
   /**
    * Parameters to regularize correlation.
@@ -21,15 +21,6 @@ class Recommender (@transient sc : SparkContext) extends Serializable {
   val MOVIES_FILENAME = "u.item"
 
   @transient val db = new MongoConnector()
-
-
-  def predict(movieName : String): Unit = {
-    val list : List[Movie] = db.list(movieName)
-    println(s"similar movies ${list.size}")
-    list.foreach { movie =>
-      println(s"${movie.movieTitle}, ${movie.similarTitle}")
-    }
-  }
 
   def init (): Unit = {
 
@@ -115,10 +106,10 @@ class Recommender (@transient sc : SparkContext) extends Serializable {
         .map(moviePairRatingsData => {
         val key = moviePairRatingsData._1
         val (size, dotProduct, ratingSum, rating2Sum, ratingNormSq, rating2NormSq, numRaters, numRaters2) = moviePairRatingsData._2
-        val corRelation            = Measures.correlation(size, dotProduct, ratingSum, rating2Sum, ratingNormSq, rating2NormSq)
-        val regularizedCorRelation = Measures.regularizedCorrelation(size, dotProduct, ratingSum, rating2Sum, ratingNormSq, rating2NormSq, PRIOR_COUNT, PRIOR_CORRELATION)
-        val cosineSimilarity       = Measures.cosineSimilarity(dotProduct, scala.math.sqrt(ratingNormSq), scala.math.sqrt(rating2NormSq))
-        val jaccardSimilarity      = Measures.jaccardSimilarity(size, numRaters, numRaters2)
+        val corRelation            = CorrelationMeasures.correlation(size, dotProduct, ratingSum, rating2Sum, ratingNormSq, rating2NormSq)
+        val regularizedCorRelation = CorrelationMeasures.regularizedCorrelation(size, dotProduct, ratingSum, rating2Sum, ratingNormSq, rating2NormSq, PRIOR_COUNT, PRIOR_CORRELATION)
+        val cosineSimilarity       = CorrelationMeasures.cosineSimilarity(dotProduct, scala.math.sqrt(ratingNormSq), scala.math.sqrt(rating2NormSq))
+        val jaccardSimilarity      = CorrelationMeasures.jaccardSimilarity(size, numRaters, numRaters2)
 
         (key, (corRelation, regularizedCorRelation, cosineSimilarity, jaccardSimilarity))
       })

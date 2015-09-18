@@ -1,4 +1,5 @@
 /**
+ * http://blog.echen.me/2011/10/24/winning-the-netflix-prize-a-summary/
  * Created by prayagupd
  * on 5/17/15.
  *************************
@@ -6,7 +7,7 @@
  *************************
  */
 
-object Measures {
+object CorrelationMeasures {
 
   /**
    * http://en.wikipedia.org/wiki/Correlation_function
@@ -45,10 +46,10 @@ object Measures {
                              virtualCount : Double,
                              priorCorrelation : Double) = {
 
-    val unregularizedCorrelation = correlation(size, dotProduct, ratingSum, rating2Sum, ratingNormSq, rating2NormSq)
+    val coorelationVal = correlation(size, dotProduct, ratingSum, rating2Sum, ratingNormSq, rating2NormSq)
     val w = size / (size + virtualCount)
 
-    w * unregularizedCorrelation + (1 - w) * priorCorrelation
+    w * coorelationVal + (1 - w) * priorCorrelation
   }
 
   /**

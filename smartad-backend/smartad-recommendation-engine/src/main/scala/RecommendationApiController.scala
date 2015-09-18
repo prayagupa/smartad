@@ -8,23 +8,15 @@ import SparkContext._
  * Uses movie ratings data from MovieLens 100k dataset found at http://www.grouplens.org/node/73
  */
 
-object RecommendationApp {
+object RecommendationApiController {
 
   def main(args: Array[String]) {
-
-    /**
-     * Spark programs require a SparkContext to be initialized
-     */
     val master = args(0)
     val arg1 = args(1) // "Star Wars (1977)"
 
     val sc = new SparkContext(master, "Recommendation App")
-    val recommender = new Recommender(sc)
-    if(arg1.equals("process")) {
-      recommender.init()
-    } else {
-      recommender.predict(arg1)
-    }
+    val recommender = new RecommendationApiService(sc)
+    recommender.getRecommendations(arg1)
 
     println("============== complete ==================")
   }
